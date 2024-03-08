@@ -28,12 +28,12 @@ main().then(()=> console.log("connect sussefullly..."))
     .catch((err) => console.log(err));
 
 //mysql connection
-const db = mysql.createConnection({
-        host : "localhost",
-        user : "root",
-        database : "users",
-        password : "root",
-});
+// const db = mysql.createConnection({
+//         host : "localhost",
+//         user : "root",
+//         database : "users",
+//         password : "root",
+// });
 
 const verifyUser = (req, res, next) => {
     const token = req.cookies.token;
