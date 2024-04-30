@@ -14,6 +14,7 @@ const user = require("./models/user.js");
     methods : ["POST","GET"],
     credentials : true,
  })); 
+
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 app.use(cookieParser());
@@ -26,14 +27,6 @@ async function main() {
 
 main().then(()=> console.log("connect sussefullly..."))
     .catch((err) => console.log(err));
-
-//mysql connection
-// const db = mysql.createConnection({
-//         host : "localhost",
-//         user : "root",
-//         database : "users",
-//         password : "root",
-// });
 
 const verifyUser = (req, res, next) => {
     const token = req.cookies.token;
@@ -59,35 +52,33 @@ app.get("/",verifyUser,(req,res) => {
 
 app.post("/register",(req,res) => {
 
-    const {name,email,pass} = req.body.user;
-
-    bcrypt.hash(pass,salt, (err,hashPass) => {
+    const {name,email,password} = req.body.user;
+    console.log(name,email,password);
+    user.findOne({email: email});
+    console.log(user.password);
+    if(user){
+        return res.json({status : "emailAlreadyExist"});
+    }
+    else{
+        bcrypt.hash(pass,salt, (err,hashPass) => {
             if(err) return res.json({Error : "err in hashing"});
-
-        const result = user.find({email:email});
-        
-        console.log(result);
-
-              if(result.length){
-                  return res.json({status : "emailAlreadyExist"});
-              }
-              else{
-                user.insertMany([{ name : name ,email : email , password : hashPass}]);
-                 return res.json({status : "success"});
-              }
-    })
+        user.insertMany([{ name : name ,email : email , password : hashPass}]);
+        return res.json({status : "success"});
+        })
+      
+    }
+   
     
 })
 app.post("/login",(req,res) => {
     const {email,password} = req.body.user;
-    let q = `SELECT * FROM REGISTER WHERE EMAIL = "${email}"`;
 
-    db.query(q, async(err,result) => {
-        if(err) return res.json({Error : "ERROR IN LOGIN"});
-        console.log(result);
-        if(result.length > 0){
+        user.findOne({email : email});
 
-             bcrypt.compare(password,result[0].pass, (err,response) => {
+        console.log(user);
+        if(user){
+
+             bcrypt.compare(password,result.password, (err,response) => {
                 if(err) return res.json({Error : "password compare errror"});
 
                 if(response){
@@ -105,8 +96,6 @@ app.post("/login",(req,res) => {
              return res.json({status : "noAccountFetch"});  
             }
     })
-    
-})
 
 
 app.get("/logout", (req,res) => {

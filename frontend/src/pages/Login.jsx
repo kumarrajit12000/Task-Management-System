@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import  axios  from 'axios';
 import "./Style.css"
+import Header from '../components/Header'
+
 const Login = () => {
 
     const [user, setUser] = useState({
@@ -39,23 +41,27 @@ const Login = () => {
     }
 
   return (
-    <div className='main'>
-       <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label htmlFor="email"><b>Email</b></label>
-                <input id='email' name='email' type='text' className='' onChange={UpdateInput}/>
-            </div>
-            <div>
-                <label htmlFor="password"><b>Password</b></label>
-                <input id='password' name='password' type='password' className='' onChange={UpdateInput}/>
-            </div>
-            <button>Login</button>
-        </form>
-        <Link to='/register'>Create Account</Link>
-        {checkpass && <p>Please check password</p>}
-        {checkEmail && <p>Email Not Registed!</p>}
-    </div>
+    <>
+        <Header />
+        
+        <div className='main'>
+           <h2>Login</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="email"><b>Email</b></label>
+                    <input id='email' name='email' type='text' className='' onChange={UpdateInput}/>
+                </div>
+                <div>
+                    <label htmlFor="password"><b>Password</b></label>
+                    <input id='password' name='password' type='password' className='' onChange={UpdateInput}/>
+                </div>
+                <button>Login</button>
+            </form>
+            <Link to='/register'>Create Account</Link>
+            {checkpass && <p>Please check password</p>}
+            {checkEmail && <p>Email Not Registed!</p>}
+        </div>
+    </>
   )
 }
 
